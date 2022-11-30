@@ -31,9 +31,9 @@ CoD.IW7AmmoContainer.new = function ( menu, controller )
 	self.WeaponName:setTopBottom( false, true, -155, -140 )
 	self.WeaponName:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
 	self.WeaponName:setTTF( "fonts/blender_pro_bold.ttf" )
-	self.WeaponName:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.weaponName" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.WeaponName:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+	self.WeaponName:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.weaponName" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			self.WeaponName:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.WeaponName )
@@ -47,9 +47,9 @@ CoD.IW7AmmoContainer.new = function ( menu, controller )
 	self.MuleKickIcon:setLeftRight( false, true, -184.5, -159 )
 	self.MuleKickIcon:setTopBottom( false, true, -62.5, -37 )
 	self.MuleKickIcon:setImage( RegisterImage( "blacktransparent" ) )
-	self.MuleKickIcon:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "IW7.MuleKick" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == 1 then
+	self.MuleKickIcon:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "IW7.MuleKick" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == 1 then
 				self.MuleKickIcon:setImage( RegisterImage( "cp_zmb_perk_icon_more" ) )
 			else
 				self.MuleKickIcon:setImage( RegisterImage( "blacktransparent" ) )
@@ -63,9 +63,9 @@ CoD.IW7AmmoContainer.new = function ( menu, controller )
 	self.AATIcon:setTopBottom( false, true, -58.5, -26.5 )
 	self.AATIcon:setImage( RegisterImage( "blacktransparent" ) )
 	self.AATIcon:setScale( 0.66 )
-	self.AATIcon:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "CurrentWeapon.aatIcon" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.AATIcon:setImage( RegisterImage( Engine.GetModelValue( modelRef ) ) )
+	self.AATIcon:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "CurrentWeapon.aatIcon" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			self.AATIcon:setImage( RegisterImage( Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.AATIcon )
@@ -281,139 +281,139 @@ CoD.IW7AmmoContainer.new = function ( menu, controller )
 			end
 		}
 	} )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.viewmodelWeaponName" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.viewmodelWeaponName" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "currentWeapon.viewmodelWeaponName"
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.playerSpawned" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.playerSpawned" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "hudItems.playerSpawned"
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_VISIBLE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_VISIBLE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_VISIBLE
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_WEAPON_HUD_VISIBLE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_WEAPON_HUD_VISIBLE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_WEAPON_HUD_VISIBLE
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_HARDCORE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_HARDCORE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_HARDCORE
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_DEMO_CAMERA_MODE_MOVIECAM ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_DEMO_CAMERA_MODE_MOVIECAM ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_DEMO_CAMERA_MODE_MOVIECAM
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_DEMO_ALL_GAME_HUD_HIDDEN ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_DEMO_ALL_GAME_HUD_HIDDEN ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_DEMO_ALL_GAME_HUD_HIDDEN
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_KILLCAM ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_KILLCAM ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_KILLCAM
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_FLASH_BANGED ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_FLASH_BANGED ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_FLASH_BANGED
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_UI_ACTIVE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_UI_ACTIVE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_UI_ACTIVE
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_SCOPED ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_SCOPED ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_SCOPED
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_VEHICLE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_VEHICLE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_VEHICLE
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_GUIDED_MISSILE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_GUIDED_MISSILE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_GUIDED_MISSILE
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_REMOTE_KILLSTREAK_STATIC ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_REMOTE_KILLSTREAK_STATIC ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_REMOTE_KILLSTREAK_STATIC
 		} )
 	end )
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_EMP_ACTIVE ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_EMP_ACTIVE ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_EMP_ACTIVE
 		} )
 	end )

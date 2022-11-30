@@ -18,16 +18,16 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
     self.LethalImage:setLeftRight( false, true, -206.5, -186.5 )
     self.LethalImage:setTopBottom( false, true, -82, -62 )
 	self.LethalImage:setImage( RegisterImage( "blacktransparent" ) )
-	self.LethalImage:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentPrimaryOffhand.primaryOffhand" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_inv_icnlthl" then
+	self.LethalImage:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentPrimaryOffhand.primaryOffhand" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == "uie_t7_zm_hud_inv_icnlthl" then
 				self.LethalImage:setImage( RegisterImage( "t7_hud_mp_inventory_grenade" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_inv_widowswine" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_inv_widowswine" then
 				self.LethalImage:setImage( RegisterImage( "t7_hud_mp_inventory_semtex" ) )
 
 			else
-				self.LethalImage:setImage( RegisterImage( Engine.GetModelValue( modelRef ) ) )
+				self.LethalImage:setImage( RegisterImage( Engine.GetModelValue( model ) ) )
 			end
 		end
 	end )
@@ -39,9 +39,9 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 	self.LethalCountText:setText( Engine.Localize( "0" ) )
 	self.LethalCountText:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.LethalCountText:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.LethalCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentPrimaryOffhand.primaryOffhandCount" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.LethalCountText:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+	self.LethalCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentPrimaryOffhand.primaryOffhandCount" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			self.LethalCountText:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.LethalCountText )
@@ -52,15 +52,15 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 	self.TacticalImage:setImage( RegisterImage( "blacktransparent" ) )
 	self.TacticalImage:setMaterial( LUI.UIImage.GetCachedMaterial( "uie_saturation_normal" ) )
 	self.TacticalImage:setShaderVector( 0, 1, 0, 0, 0 )
-	self.TacticalImage:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "CurrentSecondaryOffhand.secondaryOffhand" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == "hud_cymbal_monkey_bo3" then
+	self.TacticalImage:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "CurrentSecondaryOffhand.secondaryOffhand" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == "hud_cymbal_monkey_bo3" then
 				self.TacticalImage:setShaderVector( 0, 0, 0, 0, 0 )
 			else
 				self.TacticalImage:setShaderVector( 0, 1, 0, 0, 0 )
 			end
 
-			self.TacticalImage:setImage( RegisterImage( Engine.GetModelValue( modelRef ) ) )
+			self.TacticalImage:setImage( RegisterImage( Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.TacticalImage )
@@ -71,13 +71,13 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 	self.TacticalCountText:setText( Engine.Localize( "0" ) )
 	self.TacticalCountText:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.TacticalCountText:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.TacticalCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentSecondaryOffhand.secondaryOffhandCount" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
+	self.TacticalCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentSecondaryOffhand.secondaryOffhandCount" ), function ( model )
+		if Engine.GetModelValue( model ) then
 			if Engine.GetModelValue( Engine.GetModel( Engine.GetModelForController( controller ), "CurrentSecondaryOffhand.secondaryOffhand" ) ) ~= nil then
 				if Engine.GetModelValue( Engine.GetModel( Engine.GetModelForController( controller ), "CurrentSecondaryOffhand.secondaryOffhand" ) ) == "blacktransparent" then
 					self.TacticalCountText:setText( Engine.Localize( "" ) )
 				else
-					self.TacticalCountText:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+					self.TacticalCountText:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 				end
 			end
 		end
@@ -95,9 +95,9 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 	self.SpecialMeter:setShaderVector( 3, 0, 0, 0, 0 )
 	self.SpecialMeter:setRGB( 0.88, 0.88, 0 )
 	self.SpecialMeter:setScale( 1.25 )
-	self.SpecialMeter:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmhud.swordEnergy" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) > 0 then
+	self.SpecialMeter:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmhud.swordEnergy" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) > 0 then
 				self.SpecialMeter:setImage( RegisterImage( "uie_t7_zm_hud_revive_ringtop" ) )
 			else
 				self.SpecialMeter:setImage( RegisterImage( "blacktransparent" ) )
@@ -105,18 +105,17 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 
 			self.SpecialMeter:beginAnimation( "keyframe", 400, false, false, CoD.TweenType.Linear )
 
-			if Engine.GetModelValue( modelRef ) < 1 then
+			if Engine.GetModelValue( model ) < 1 then
 				self.SpecialMeter:setRGB( 0.88, 0.88, 0 )
 			else
 				self.SpecialMeter:setRGB( 0, 0.88, 0 )
 			end
 
 			self.SpecialMeter:setShaderVector( 0, AdjustStartEnd( 0, 1,
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 1 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 2 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 3 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 4 ) )
-			)
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 1 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 2 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 3 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 4 ) ) )
 		end
 	end )
 	self:addElement( self.SpecialMeter )
@@ -126,9 +125,9 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
     self.Special:setTopBottom( false, true, -117, -97 )
 	self.Special:setImage( RegisterImage( "blacktransparent" ) )
 	self.Special:setScale( 0.75 )
-	self.Special:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmhud.swordEnergy" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) > 0 then
+	self.Special:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmhud.swordEnergy" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) > 0 then
 				self.Special:setImage( RegisterImage( "uie_t7_mp_icon_header_character" ) )
 			else
 				self.Special:setImage( RegisterImage( "blacktransparent" ) )
@@ -143,9 +142,9 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 	self.SpecialCountText:setText( Engine.Localize( "" ) )
 	self.SpecialCountText:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.SpecialCountText:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.SpecialCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmhud.swordEnergy" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) < 1 then
+	self.SpecialCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmhud.swordEnergy" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) < 1 then
 				self.SpecialCountText:setText( Engine.Localize( "" ) )
 			else
 				self.SpecialCountText:setText( Engine.Localize( "1" ) )
@@ -158,9 +157,9 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
     self.DpadIconMine:setLeftRight( false, true, -251.5, -231.5 )
     self.DpadIconMine:setTopBottom( false, true, -117, -97 )
 	self.DpadIconMine:setImage( RegisterImage( "blacktransparent" ) )
-	self.DpadIconMine:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.actionSlot3ammo" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) > 0 then
+	self.DpadIconMine:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.actionSlot3ammo" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) > 0 then
 				self.DpadIconMine:setImage( RegisterImage( "t7_hud_mp_inventory_bouncingbetty" ) )
 			else
 				self.DpadIconMine:setImage( RegisterImage( "blacktransparent" ) )
@@ -175,10 +174,10 @@ CoD.IW7AmmoEquipment.new = function ( menu, controller )
 	self.DpadIconMineCountText:setText( Engine.Localize( "" ) )
 	self.DpadIconMineCountText:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.DpadIconMineCountText:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.DpadIconMineCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.actionSlot3ammo" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) > 0 then
-				self.DpadIconMineCountText:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+	self.DpadIconMineCountText:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.actionSlot3ammo" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) > 0 then
+				self.DpadIconMineCountText:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 			else
 				self.DpadIconMineCountText:setText( Engine.Localize( "" ) )
 			end

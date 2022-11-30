@@ -18,15 +18,24 @@ require( "ui.uieditor.widgets.BubbleGumBuffs.BubbleGumPackInGame" )
 require( "ui.uieditor.widgets.ZMInventoryStalingrad.GameTimeGroup" )
 
 -- IW Widgets
+require( "ui.uieditor.menus.StartMenu.IW7StartMenu_Main" )
 require( "ui.uieditor.widgets.HUD.IW7AmmoWidget.IW7AmmoContainer" )
+require( "ui.uieditor.widgets.HUD.IW7GameOverWidget.IW7GameOver" )
+require( "ui.uieditor.widgets.HUD.IW7NotificationWidget.IW7Notification" )
 require( "ui.uieditor.widgets.HUD.IW7PerksWidget.IW7PerksContainer" )
 require( "ui.uieditor.widgets.HUD.IW7RoundWidget.IW7Round" )
 require( "ui.uieditor.widgets.HUD.IW7ScoreWidget.IW7ScoreContainer" )
+require( "ui.uieditor.widgets.HUD.IW7ScoreboardWidget.IW7Scoreboard" )
+require( "ui.uieditor.widgets.HUD.KingslayerPowerupsWidget.KingslayerPowerupsContainer" )
 
 CoD.Zombie.CommonHudRequire()
 
 local PreLoadFunc = function ( self, controller )
 	CoD.Zombie.CommonPreLoadHud( self, controller )
+
+	-- Your maps name, this is used on round & start menu.
+	-- Note: You can use \n for a new line.
+	CoD.UsermapName = "Replace this text\nwith your maps name"
 end
 
 local PostLoadFunc = function ( self, controller )
@@ -61,6 +70,23 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	self.DummyFont2:setTTF( "fonts/blender_pro_medium.ttf" )
 	self.DummyFont2:setText( "DummyFont" )
 	self:addElement( self.DummyFont2 )
+
+	self.DummyFont3 = LUI.UIText.new()
+	self.DummyFont3:setLeftRight( true, false, -1280, -1000 )
+	self.DummyFont3:setTopBottom( true, false, -720, -700 )
+	self.DummyFont3:setTTF( "fonts/zm_clean.ttf" )
+	self.DummyFont3:setText( "DummyFont" )
+	self:addElement( self.DummyFont3 )
+
+	self.IW7GameOver = CoD.IW7GameOver.new( self, controller )
+	self.IW7GameOver:setLeftRight( true, true, 0, 0 )
+	self.IW7GameOver:setTopBottom( true, true, 0, 0 )
+	self:addElement( self.IW7GameOver )
+
+	self.KingslayerPowerupsContainer = CoD.KingslayerPowerupsContainer.new( self, controller )
+	self.KingslayerPowerupsContainer:setLeftRight( true, true, 0, 0 )
+	self.KingslayerPowerupsContainer:setTopBottom( true, true, 0, 0 )
+	self:addElement( self.KingslayerPowerupsContainer )
 	
 	self.ZMPerksContainerFactory = CoD.IW7PerksContainer.new( self, controller )
 	self.ZMPerksContainerFactory:setLeftRight( true, true, 0, 0 )
@@ -94,18 +120,22 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	self.Notifications:setLeftRight( true, true, 0, 0 )
 	self.Notifications:setTopBottom( true, true, 0, 0 )
 	self:addElement( self.Notifications )
+
+	self.IW7Notification = CoD.IW7Notification.new( self, controller )
+	self.IW7Notification:setLeftRight( false, false, -156, 156 )
+	self.IW7Notification:setTopBottom( true, false, -6, 247 )
+	self.IW7Notification:setScale( 0.75 )
+	self:addElement( self.IW7Notification )
 	
 	self.ZmNotifBGBContainerFactory = CoD.ZmNotifBGB_ContainerFactory.new( self, controller )
 	self.ZmNotifBGBContainerFactory:setLeftRight( false, false, -156, 156 )
 	self.ZmNotifBGBContainerFactory:setTopBottom( true, false, -6, 247 )
 	self.ZmNotifBGBContainerFactory:setScale( 0.75 )
-	self.ZmNotifBGBContainerFactory:subscribeToGlobalModel( controller, "PerController", "scriptNotify", function ( modelRef )
-		if IsParamModelEqualToString( modelRef, "zombie_bgb_token_notification" ) then
-			AddZombieBGBTokenNotification( self, self.ZmNotifBGBContainerFactory, controller, modelRef )
-		elseif IsParamModelEqualToString( modelRef, "zombie_bgb_notification" ) then
-			AddZombieBGBNotification( self, self.ZmNotifBGBContainerFactory, modelRef )
-		elseif IsParamModelEqualToString( modelRef, "zombie_notification" ) then
-			AddZombieNotification( self, self.ZmNotifBGBContainerFactory, modelRef )
+	self.ZmNotifBGBContainerFactory:subscribeToGlobalModel( controller, "PerController", "scriptNotify", function ( model )
+		if IsParamModelEqualToString( model, "zombie_bgb_token_notification" ) then
+			AddZombieBGBTokenNotification( self, self.ZmNotifBGBContainerFactory, controller, model )
+		elseif IsParamModelEqualToString( model, "zombie_bgb_notification" ) then
+			AddZombieBGBNotification( self, self.ZmNotifBGBContainerFactory, model )
 		end
 	end )
 	self:addElement( self.ZmNotifBGBContainerFactory )
@@ -113,6 +143,18 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	self.CursorHint = CoD.ZMCursorHint.new( self, controller )
 	self.CursorHint:setLeftRight( false, false, -250, 250 )
 	self.CursorHint:setTopBottom( true, false, 522, 616 )
+	self.CursorHint.cursorhinttext0:unsubscribeFromAllModels()
+	self.CursorHint.cursorhinttext0.FEButtonPanel0:setScale( 0 )
+	self.CursorHint.cursorhinttext0.CursorHintText:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.CursorHint.cursorhinttext0.CursorHintText:subscribeToGlobalModel( controller, "HUDItems", "cursorHintText", function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.Localize( Engine.GetModelValue( model ) ):find( "%[Cost: " ) then
+				self.CursorHint.cursorhinttext0.CursorHintText:setText( Engine.Localize( Engine.GetModelValue( model ) ):gsub( "%[Cost: ", "(^2$" ):gsub( "%]", "^7)" ) )
+			else
+				self.CursorHint.cursorhinttext0.CursorHintText:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
+			end
+		end
+	end )
 	self.CursorHint:mergeStateConditions( {
 		{
 			stateName = "Active_1x1",
@@ -195,83 +237,83 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 			end
 		}
 	} )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.showCursorHint" ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.showCursorHint" ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "hudItems.showCursorHint"
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_HARDCORE ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_HARDCORE ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_HARDCORE
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_VISIBLE ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_VISIBLE ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_HUD_VISIBLE
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_GUIDED_MISSILE ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_GUIDED_MISSILE ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IN_GUIDED_MISSILE
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_DEMO_PLAYING ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_DEMO_PLAYING ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_DEMO_PLAYING
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_FLASH_BANGED ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_FLASH_BANGED ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_IS_FLASH_BANGED
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SELECTING_LOCATIONAL_KILLSTREAK ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SELECTING_LOCATIONAL_KILLSTREAK ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SELECTING_LOCATIONAL_KILLSTREAK
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SPECTATING_CLIENT ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SPECTATING_CLIENT ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SPECTATING_CLIENT
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_UI_ACTIVE ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_UI_ACTIVE ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_UI_ACTIVE
 		} )
 	end )
-	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.cursorHintIconRatio" ), function ( modelRef )
+	self.CursorHint:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.cursorHintIconRatio" ), function ( model )
 		self:updateElementState( self.CursorHint, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "hudItems.cursorHintIconRatio"
 		} )
 	end )
@@ -290,10 +332,10 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	self.MPScore = CoD.MPScr.new( self, controller )
 	self.MPScore:setLeftRight( false, false, -50, 50 )
 	self.MPScore:setTopBottom( true, false, 233.5, 258.5 )
-	self.MPScore:subscribeToGlobalModel( controller, "PerController", "scriptNotify", function ( modelRef )
-		if IsParamModelEqualToString( modelRef, "score_event" ) and PropertyIsTrue( self, "menuLoaded" ) then
+	self.MPScore:subscribeToGlobalModel( controller, "PerController", "scriptNotify", function ( model )
+		if IsParamModelEqualToString( model, "score_event" ) and PropertyIsTrue( self, "menuLoaded" ) then
 			PlayClipOnElement( self, { elementName = "MPScore", clipName = "NormalScore" }, controller )
-			SetMPScoreText( self, self.MPScore, controller, modelRef )
+			SetMPScoreText( self, self.MPScore, controller, model )
 		end
 	end )
 	self:addElement( self.MPScore )
@@ -303,9 +345,9 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	self.ZMPrematchCountdown0:setTopBottom( false, false, -360, 360 )
 	self:addElement( self.ZMPrematchCountdown0 )
 	
-	self.ScoreboardWidget = CoD.ScoreboardWidgetCP.new( self, controller )
-	self.ScoreboardWidget:setLeftRight( false, false, -503, 503 )
-	self.ScoreboardWidget:setTopBottom( true, false, 247, 773 )
+	self.ScoreboardWidget = CoD.IW7Scoreboard.new( self, controller )
+	self.ScoreboardWidget:setLeftRight( true, true, 0, 0 )
+	self.ScoreboardWidget:setTopBottom( true, true, 0, 0 )
 	self:addElement( self.ScoreboardWidget )
 	
 	self.ZMBeastBar = CoD.ZM_BeastmodeTimeBarWidget.new( self, controller )
@@ -326,19 +368,19 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 			end
 		}
 	} )
-	self.RocketShieldBlueprintWidget:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmInventory.widget_shield_parts" ), function ( modelRef )
+	self.RocketShieldBlueprintWidget:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "zmInventory.widget_shield_parts" ), function ( model )
 		self:updateElementState( self.RocketShieldBlueprintWidget, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "zmInventory.widget_shield_parts"
 		} )
 	end )
-	self.RocketShieldBlueprintWidget:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( modelRef )
+	self.RocketShieldBlueprintWidget:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( model )
 		self:updateElementState( self.RocketShieldBlueprintWidget, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN
 		} )
 	end )
@@ -353,29 +395,104 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	self.IngameChatClientContainer0:setLeftRight( true, false, 0, 360 )
 	self.IngameChatClientContainer0:setTopBottom( true, false, -2.5, 717.5 )
 	self:addElement( self.IngameChatClientContainer0 )
-	
+
 	self.BubbleGumPackInGame = CoD.BubbleGumPackInGame.new( self, controller )
-	self.BubbleGumPackInGame:setLeftRight( true, true, 0, 5 )
-	self.BubbleGumPackInGame:setTopBottom( true, true, -100, 0 )
-	self.BubbleGumPackInGame:setScale( 0.65 )
+	self.BubbleGumPackInGame:setLeftRight( true, false, 1000, 0 )
+	self.BubbleGumPackInGame:setTopBottom( true, false, 20, 0 )
+	self.BubbleGumPackInGame:setScale( 0.8 )
+	self.BubbleGumPackInGame.BubbleGumPack.FEButtonPanelShaderContainer:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.Black:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.BackPanel:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.FEButtonIdle:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.FEButtonFocus:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.BubbleGumPackNameTextBox:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.BubbleGumPackLabel:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.BubbleGumPackLabelStroke:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.HighlightFrame:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.Glow:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.Glow2:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.HighlightFrame1:setScale( 0 )
+	self.BubbleGumPackInGame.BubbleGumPack.Arrow:setScale( 0 )
+	self.BubbleGumPackInGame:mergeStateConditions( {
+		{
+			stateName = "Visible",
+			condition = function ( menu, element, event )
+				if Engine.IsVisibilityBitSet( controller, Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN )
+				and not Engine.IsVisibilityBitSet( controller, Enum.UIVisibilityBit.BIT_GAME_ENDED ) then
+					return true
+				else
+					return false
+				end
+			end
+		}
+	} )
+	self.BubbleGumPackInGame:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( model )
+		self:updateElementState( self.BubbleGumPackInGame, {
+			name = "model_validation",
+			menu = self,
+			modelValue = Engine.GetModelValue( model ),
+			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN
+		} )
+	end )
+	self.BubbleGumPackInGame:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED ), function ( model )
+		self:updateElementState( self.BubbleGumPackInGame, {
+			name = "model_validation",
+			menu = self,
+			modelValue = Engine.GetModelValue( model ),
+			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED
+		} )
+	end )
 	self:addElement( self.BubbleGumPackInGame )
 	
 	self.GameTimeGroup = CoD.GameTimeGroup.new( self, controller )
-	self.GameTimeGroup:setLeftRight( false, true, -655, 0 )
-	self.GameTimeGroup:setTopBottom( true, false, 52.75, 0 )
-	self.GameTimeGroup:setScale( 0.95 )
-	self.GameTimeGroup.CurrentClockTime:setLeftRight( true, false, 268, 396 )
-	self.GameTimeGroup.CurrentClockTime:setTopBottom( true, false, 0, 96 )
-	self.GameTimeGroup.SurviveTime:setLeftRight( true, false, 268, 396 )
-	self.GameTimeGroup.SurviveTime:setTopBottom( true, false, 0, 96 )
-	self.GameTimeGroup.QuestTime:setLeftRight( true, false, 0, 128 )
-	self.GameTimeGroup.QuestTime:setTopBottom( true, false, 0, 96 )
+	self.GameTimeGroup:setLeftRight( true, false, 64, 0 )
+	self.GameTimeGroup:setTopBottom( true, false, 190, 0 )
+	self.GameTimeGroup.CurrentClockTime.FEButtonPanelShaderContainer:setScale( 0 )
+	self.GameTimeGroup.CurrentClockTime.Backing:setRGB( 0.34, 0.34, 0.36 )
+	self.GameTimeGroup.CurrentClockTime.BackPanel:setScale( 0 )
+	self.GameTimeGroup.CurrentClockTime.TimeElasped:setLeftRight( true, false, 0 - 100, 128 + 100 )
+	self.GameTimeGroup.CurrentClockTime.TimeElasped:setTopBottom( true, false, 7 + 90, 29 + 90 )
+	self.GameTimeGroup.CurrentClockTime.TimeElasped:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.CurrentClockTime.TimeElasped:setScale( 0.8 )
+	self.GameTimeGroup.CurrentClockTime.GameTimer:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.CurrentClockTime.GameTimer:setScale( 0.8 )
+	self.GameTimeGroup.CurrentClockTime.HighlightFrame:setRGB( 0.85, 0.16, 0.47 )
+	self.GameTimeGroup.SurviveTime.FEButtonPanelShaderContainer:setScale( 0 )
+	self.GameTimeGroup.SurviveTime.Backing:setRGB( 0.34, 0.34, 0.36 )
+	self.GameTimeGroup.SurviveTime.BackPanel:setScale( 0 )
+	self.GameTimeGroup.SurviveTime.TimeElasped:setLeftRight( true, false, 0 - 100, 128 + 100 )
+	self.GameTimeGroup.SurviveTime.TimeElasped:setTopBottom( true, false, 7 + 90, 29 + 90 )
+	self.GameTimeGroup.SurviveTime.TimeElasped:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.SurviveTime.TimeElasped:setScale( 0.8 )
+	self.GameTimeGroup.SurviveTime.GameTimer:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.SurviveTime.GameTimer:setScale( 0.8 )
+	self.GameTimeGroup.SurviveTime.HighlightFrame:setRGB( 0.85, 0.16, 0.47 )
+	self.GameTimeGroup.Last5RoundTime.FEButtonPanelShaderContainer:setScale( 0 )
+	self.GameTimeGroup.Last5RoundTime.Backing:setRGB( 0.34, 0.34, 0.36 )
+	self.GameTimeGroup.Last5RoundTime.BackPanel:setScale( 0 )
+	self.GameTimeGroup.Last5RoundTime.TimeElasped:setLeftRight( true, false, 0 - 100, 128 + 100 )
+	self.GameTimeGroup.Last5RoundTime.TimeElasped:setTopBottom( true, false, 7 + 90, 29 + 90 )
+	self.GameTimeGroup.Last5RoundTime.TimeElasped:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.Last5RoundTime.TimeElasped:setScale( 0.8 )
+	self.GameTimeGroup.Last5RoundTime.GameTimer:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.Last5RoundTime.GameTimer:setScale( 0.8 )
+	self.GameTimeGroup.Last5RoundTime.HighlightFrame:setRGB( 0.85, 0.16, 0.47 )
+	self.GameTimeGroup.QuestTime.FEButtonPanelShaderContainer:setScale( 0 )
+	self.GameTimeGroup.QuestTime.Backing:setRGB( 0.34, 0.34, 0.36 )
+	self.GameTimeGroup.QuestTime.BackPanel:setScale( 0 )
+	self.GameTimeGroup.QuestTime.TimeElasped:setLeftRight( true, false, 0 - 100, 128 + 100 )
+	self.GameTimeGroup.QuestTime.TimeElasped:setTopBottom( true, false, 7 + 90, 29 + 90 )
+	self.GameTimeGroup.QuestTime.TimeElasped:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.QuestTime.TimeElasped:setScale( 0.8 )
+	self.GameTimeGroup.QuestTime.GameTimer:setTTF( "fonts/blender_pro_medium.ttf" )
+	self.GameTimeGroup.QuestTime.GameTimer:setScale( 0.8 )
+	self.GameTimeGroup.QuestTime.HighlightFrame:setRGB( 0.85, 0.16, 0.47 )
 	self.GameTimeGroup:mergeStateConditions( {
 		{
 			stateName = "Visible",
 			condition = function ( menu, element, event )
-				if Engine.IsVisibilityBitSet( controller, Enum.UIVisibilityBit.BIT_GAME_ENDED )
-				or Engine.IsVisibilityBitSet( controller, Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ) then
+				if Engine.IsVisibilityBitSet( controller, Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN )
+				and not Engine.IsVisibilityBitSet( controller, Enum.UIVisibilityBit.BIT_GAME_ENDED ) then
 					return true
 				else
 					return false
@@ -389,20 +506,20 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 			end
 		}
 	} )
-	self.GameTimeGroup:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED ), function ( modelRef )
+	self.GameTimeGroup:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( model )
 		self:updateElementState( self.GameTimeGroup, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
-			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED
+			modelValue = Engine.GetModelValue( model ),
+			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN
 		} )
 	end )
-	self.GameTimeGroup:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN ), function ( modelRef )
+	self.GameTimeGroup:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED ), function ( model )
 		self:updateElementState( self.GameTimeGroup, {
 			name = "model_validation",
 			menu = self,
-			modelValue = Engine.GetModelValue( modelRef ),
-			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_SCOREBOARD_OPEN
+			modelValue = Engine.GetModelValue( model ),
+			modelName = "UIVisibilityBit." .. Enum.UIVisibilityBit.BIT_GAME_ENDED
 		} )
 	end )
 	self:addElement( self.GameTimeGroup )
@@ -420,9 +537,16 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	CoD.Menu.AddNavigationHandler( self, self, controller )
 
 	self:registerEventHandler( "menu_loaded", function ( element, event )
+		local retVal = nil
+		
 		SizeToSafeArea( element, controller )
 		SetProperty( self, "menuLoaded", true )
-		element:dispatchEventToChildren( event )
+		
+		if not retVal then
+			retVal = element:dispatchEventToChildren( event )
+		end
+
+		return retVal
 	end )
 
 	self.Score.id = "Score"
@@ -448,12 +572,16 @@ LUI.createMenu.T7Hud_zm_factory = function ( controller )
 	LUI.OverrideFunction_CallOriginalSecond( self, "close", function ( element )
 		element.DummyFont1:close()
 		element.DummyFont2:close()
+		element.DummyFont3:close()
+		element.IW7GameOver:close()
+		element.KingslayerPowerupsContainer:close()
 		element.ZMPerksContainerFactory:close()
 		element.Rounds:close()
 		element.Ammo:close()
 		element.Score:close()
 		element.fullscreenContainer:close()
 		element.Notifications:close()
+		element.IW7Notification:close()
 		element.ZmNotifBGBContainerFactory:close()
 		element.CursorHint:close()
 		element.ConsoleCenter:close()

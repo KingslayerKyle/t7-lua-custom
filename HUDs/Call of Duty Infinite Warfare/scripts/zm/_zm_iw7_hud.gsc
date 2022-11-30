@@ -28,6 +28,7 @@ function __init__()
 
 function __main__()
 {
+	level._supress_survived_screen = true;
     callback::on_spawned( &on_player_spawned );
 }
 

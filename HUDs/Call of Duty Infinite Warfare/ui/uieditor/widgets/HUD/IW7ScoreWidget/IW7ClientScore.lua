@@ -27,9 +27,9 @@ CoD.IW7ClientScore.new = function ( menu, controller )
 	self.ScoreText:setTopBottom( false, true, -240, -225 )
 	self.ScoreText:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.ScoreText:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_LEFT )
-	self.ScoreText:linkToElementModel( self, "playerScore", true, function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.ScoreText:setText( Engine.Localize( "$ " .. Engine.GetModelValue( modelRef ) ) )
+	self.ScoreText:linkToElementModel( self, "playerScore", true, function ( model )
+		if Engine.GetModelValue( model ) then
+			self.ScoreText:setText( Engine.Localize( "$ " .. Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.ScoreText )
@@ -39,42 +39,42 @@ CoD.IW7ClientScore.new = function ( menu, controller )
 	self.PortraitImage:setTopBottom( false, true, -260, -220 )
 	self.PortraitImage:setImage( RegisterImage( "blacktransparent" ) )
 	self.PortraitImage:setMaterial( LUI.UIImage.GetCachedMaterial( "uie_feather_blend" ) )
-	self.PortraitImage:linkToElementModel( self, "zombiePlayerIcon", true, function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char1" then
+	self.PortraitImage:linkToElementModel( self, "zombiePlayerIcon", true, function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char1" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_nikolai" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char1_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char1_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_nikolai_old" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char2" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char2" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_takeo" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char2_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char2_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_takeo_old" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char3" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char3" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_dempsey" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char3_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char3_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_dempsey_old" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char4" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char4" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_richtofen" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char4_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char4_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_richtofen_old" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char5" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char5" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_jessica" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char6" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char6" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_jack" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char7" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char7" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_nero" ) )
 	
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char8" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char8" then
 				self.PortraitImage:setImage( RegisterImage( "zm_team_floyd" ) )
 			end
 		end
@@ -126,11 +126,11 @@ CoD.IW7ClientScore.new = function ( menu, controller )
 			end
 		}
 	} )
-	self:linkToElementModel( self, "playerScoreShown", true, function ( modelRef )
+	self:linkToElementModel( self, "playerScoreShown", true, function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "playerScoreShown"
 		} )
 	end )

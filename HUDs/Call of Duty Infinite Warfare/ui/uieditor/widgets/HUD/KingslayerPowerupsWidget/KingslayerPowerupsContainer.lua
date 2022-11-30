@@ -1,163 +1,77 @@
--- Decompiled using CoDLuaDecompiler by JariKCoding
--- https://github.com/JariKCoding/CoDLuaDecompiler
+require( "ui.uieditor.widgets.HUD.KingslayerPowerupsWidget.KingslayerPowerupsListItem" )
 
--- Author: Kingslayer Kyle
--- DD MM YY: 31/08/2022
--- Edits: Added comments, named functions & variables, fixed some bugs with the conditions in the HandlePerksList function
-
-require( "ui.uieditor.widgets.HUD.IW7PerksWidget.IW7PerksListItem" )
-
--- A table that contains the clientfield names and images of the perks
-local perksTable = {
-	additional_primary_weapon = "cp_zmb_perk_icon_more",
-	dead_shot = "cp_zmb_perk_icon_deadeye",
-	doubletap2 = "cp_zmb_perk_icon_ratatat",
-	juggernaut = "cp_zmb_perk_icon_tough",
-	marathon = "cp_zmb_perk_icon_run",
-	quick_revive = "cp_zmb_perk_icon_revive",
-	sleight_of_hand = "cp_zmb_perk_icon_flash",
-	widows_wine = "cp_zmb_perk_icon_widow",
-	electric_cherry = "cp_zmb_perk_icon_zap"
+CoD.PowerUps.ClientFieldNames = {
+	{
+		clientFieldName = "powerup_instant_kill",
+		image = "zm_powerup_instakill"
+	},
+	{
+		clientFieldName = "powerup_double_points",
+		image = "zm_powerup_double_cash"
+	},
+	{
+		clientFieldName = "powerup_fire_sale",
+		image = "zm_powerup_fire_sale"
+	},
+	{
+		clientFieldName = "powerup_mini_gun",
+		image = "zm_powerup_infinite_ammo"
+	}
 }
 
--- Summary: Used in the HandlePerksList function to get the perk index on the current iteration from element.perksList
--- Arg 1: A table that contains the player's current perks
--- Arg 2: The perk's clientfield name
-local GetPerkIndex = function ( perksList, perkCF )
-	if perksList ~= nil then
-		for index = 1, #perksList do
-			if perksList[index].properties.key == perkCF then
-				return index
-			end
-		end
+CoD.PowerUps.Update = function ( element, event )
+	local powerupState = Engine.GetModel( Engine.GetModelForController( event.controller ), event.name .. ".state" )
+
+	if not Engine.GetModelValue( powerupState ) then
+		Engine.SetModelValue( powerupState, 0 )
 	end
 
-	return nil
+	Engine.SetModelValue( powerupState, event.newValue )
 end
-
--- Summary: Used in the HandlePerksList function to check if the status stored on the table needs to be updated with the current model value
--- Arg 1: A table that contains the player's current perks
--- Arg 2: The perk's clientfield name
--- Arg 3: The model value of the current perk which indicates it's status, 0 == off, 1 == on, 2 == paused
-local CheckPerkIndexForUpdate = function ( perksList, perkCF, perkStatus )
-	if perksList ~= nil then
-		for index = 1, #perksList do
-			if perksList[index].properties.key == perkCF and perksList[index].models.status ~= perkStatus then
-				return index
-			end
-		end
-	end
-
-	return -1
-end
-
--- Summary: Handles the element.perksList table, which is used to store the player's current perks
--- Arg 1: The UIList
--- Arg 2: The instance
-local HandlePerksList = function ( element, controller )
-	-- Create element.perksList if it doesn't already exist, this will be used to store the player's current perks
-	if not element.perksList then
-		element.perksList = {}
-	end
-
-	-- bool, whether or not something was added to the table or removed from the table
-	local tableUpdated = false
-
-	-- Parent model, that each of the perks' sub-models will be stored on
-	local perksParentModel = Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.perks" )
-
-	-- Loop through each of the perks in perksTable
-	for key, value in pairs( perksTable ) do
-		-- The model value for the individual perk, which indicates it's status, 0 == off, 1 == on, 2 == paused
-		local perkStatus = Engine.GetModelValue( Engine.GetModel( perksParentModel, key ) )
-
-		-- Let's check the model value is not nil, and then check if it's an active perk (value is more than 1)
-		if perkStatus ~= nil and perkStatus > 0 then
-			-- If it's not in element.perksList, let's add it
-			if not GetPerkIndex( element.perksList, key ) then
-				table.insert( element.perksList, {
-					models = {
-						image = value,
-						status = perkStatus,
-						newPerk = false
-					},
-					properties = {
-						key = key
-					}
-				} )
-
-				-- Perk has been added to the table
-				tableUpdated = true
-			end
-
-			-- Let's make sure the status that's stored on the table is equal to the current model value
-			local perkIndexToCheck = CheckPerkIndexForUpdate( element.perksList, key, perkStatus )
-
-			-- If it isn't, let's update it
-			if perkIndexToCheck > 0 then
-				element.perksList[perkIndexToCheck].models.status = perkStatus
-				
-				Engine.SetModelValue( Engine.GetModel( Engine.GetModel( Engine.GetModelForController( controller ), "ZMPerksFactory" ), tostring( perkIndexToCheck ) .. ".status" ), perkStatus )
-			end
-
-		-- Otherwise, let's remove it if it's in element.perksList
-		else
-			-- Get the perk index to remove
-			local perkIndexToCheck = GetPerkIndex( element.perksList, key )
-
-			-- If we get a hit, remove it
-			if perkIndexToCheck then
-				table.remove( element.perksList, perkIndexToCheck )
-				
-				-- Perk has been removed from the table
-				tableUpdated = true
-			end
-		end
-	end
-
-	if tableUpdated then
-		-- Set newPerk if applicable, this is an animation that plays when the player receives a new perk
-		for index = 1, #element.perksList do
-			element.perksList[index].models.newPerk = index == #element.perksList
-		end
-
-		-- This is used on each perk model subscription in PreLoadFunc to know whether or not the datasource needs to be updated
-		return true
-	else
-		-- Set the perks' model value to the status stored on element.perksList
-		for index = 1, #element.perksList do
-			Engine.SetModelValue( Engine.GetModel( perksParentModel, element.perksList[index].properties.key ), element.perksList[index].models.status )
-		end
-
-		-- This is used on each perk model subscription in PreLoadFunc to know whether or not the datasource needs to be updated
-		return false
-	end
-end
-
-DataSources.ZMPerksFactory = DataSourceHelpers.ListSetup( "ZMPerksFactory", function ( controller, element )
-	-- This function handles element.perksList
-	HandlePerksList( element, controller )
-	-- After it's been handled, let's pass it to the datasource so that it updates the UIList
-	return element.perksList
-end, true )
 
 local PreLoadFunc = function ( self, controller )
-	-- Create the parent model, that each of the perks' sub-models will be stored on
-	local perksParentModel = Engine.CreateModel( Engine.GetModelForController( controller ), "hudItems.perks" )
-
-	-- Creates and subscribes to each of the sub-models of the perks
-	for key, value in pairs( perksTable ) do
-		self:subscribeToModel( Engine.CreateModel( perksParentModel, key ), function ( model )
-			-- If HandlePerksList returns true, let's update the datasource
-			if HandlePerksList( self.PerkList, controller ) then
-				self.PerkList:updateDataSource()
-			end
-		end, false )
+	for index = 1, #CoD.PowerUps.ClientFieldNames do
+		Engine.CreateModel( Engine.GetModelForController( controller ), CoD.PowerUps.ClientFieldNames[index].clientFieldName .. ".state" )
 	end
 end
 
-CoD.IW7PerksContainer = InheritFrom( LUI.UIElement )
-CoD.IW7PerksContainer.new = function ( menu, controller )
+local PostLoadFunc = function ( self, controller, menu )
+	for index = 1, #CoD.PowerUps.ClientFieldNames do
+		local powerupState = Engine.GetModel( Engine.GetModelForController( controller ), CoD.PowerUps.ClientFieldNames[index].clientFieldName .. ".state" )
+		
+		if powerupState then
+			self.PowerupList:subscribeToModel( powerupState, function ( model )
+				self.PowerupList:updateDataSource()
+			end )
+		end
+	end
+end
+
+DataSources.KingslayerPowerups = DataSourceHelpers.ListSetup( "KingslayerPowerups", function ( controller, element )	
+	local dataTable = {}
+
+	local powerupState = nil
+
+	for index = 1, #CoD.PowerUps.ClientFieldNames do
+		powerupState = Engine.GetModelValue( Engine.GetModel( Engine.GetModelForController( controller ), CoD.PowerUps.ClientFieldNames[index].clientFieldName .. ".state" ) )
+
+		if powerupState then
+			if powerupState > 0 then
+				table.insert( dataTable, {
+					models = {
+						image = CoD.PowerUps.ClientFieldNames[index].image,
+						state = powerupState
+					}
+				} )
+			end
+		end
+	end
+
+	return dataTable
+end, true )
+
+CoD.KingslayerPowerupsContainer = InheritFrom( LUI.UIElement )
+CoD.KingslayerPowerupsContainer.new = function ( menu, controller )
 	local self = LUI.UIElement.new()
 
 	if PreLoadFunc then
@@ -165,30 +79,29 @@ CoD.IW7PerksContainer.new = function ( menu, controller )
 	end
 
 	self:setUseStencil( false )
-	self:setClass( CoD.IW7PerksContainer )
-	self.id = "IW7PerksContainer"
-	self.soundSet = "default"
+	self:setClass( CoD.KingslayerPowerupsContainer )
+	self.id = "KingslayerPowerupsContainer"
+	self.soundSet = "HUD"
 	self:setLeftRight( true, false, 0, 1280 )
 	self:setTopBottom( true, false, 0, 720 )
-	self.anyChildUsesUpdateState = true
-	
-	self.PerkList = LUI.UIList.new( menu, controller, 8, 0, nil, false, false, 0, 0, false, false )
-	self.PerkList:makeFocusable()
-	self.PerkList:setLeftRight( false, false, 0, 0 )
-	self.PerkList:setTopBottom( false, true, -137, -9 )
-	self.PerkList:setWidgetType( CoD.IW7PerksListItem )
-	self.PerkList:setHorizontalCount( 20 )
-	self.PerkList:setDataSource( "ZMPerksFactory" )
-	self:addElement( self.PerkList )
-	
+
+	self.PowerupList = LUI.UIList.new( menu, controller, 8, 0, nil, false, false, 0, 0, false, false )
+	self.PowerupList:makeFocusable()
+	self.PowerupList:setLeftRight( false, true, 0, -150 )
+	self.PowerupList:setTopBottom( true, false, 25, 0 )
+	self.PowerupList:setWidgetType( CoD.KingslayerPowerupsListItem )
+	self.PowerupList:setHorizontalCount( 4 )
+	self.PowerupList:setDataSource( "KingslayerPowerups" )
+	self:addElement( self.PowerupList )
+
 	self.clipsPerState = {
 		DefaultState = {
 			DefaultClip = function ()
 				self:setupElementClipCounter( 1 )
 
-				self.PerkList:completeAnimation()
-				self.PerkList:setAlpha( 1 )
-				self.clipFinished( self.PerkList, {} )
+				self.PowerupList:completeAnimation()
+				self.PowerupList:setAlpha( 1 )
+				self.clipFinished( self.PowerupList, {} )
 			end,
 			Hidden = function ()
 				self:setupElementClipCounter( 1 )
@@ -207,18 +120,18 @@ CoD.IW7PerksContainer.new = function ( menu, controller )
 					end
 				end
 
-				self.PerkList:completeAnimation()
-				self.PerkList:setAlpha( 1 )
-				HiddenTransition( self.PerkList, {} )
+				self.PowerupList:completeAnimation()
+				self.PowerupList:setAlpha( 1 )
+				HiddenTransition( self.PowerupList, {} )
 			end
 		},
 		Hidden = {
 			DefaultClip = function ()
 				self:setupElementClipCounter( 1 )
 
-				self.PerkList:completeAnimation()
-				self.PerkList:setAlpha( 0 )
-				self.clipFinished( self.PerkList, {} )
+				self.PowerupList:completeAnimation()
+				self.PowerupList:setAlpha( 0 )
+				self.clipFinished( self.PowerupList, {} )
 			end,
 			DefaultState = function ()
 				self:setupElementClipCounter( 1 )
@@ -237,13 +150,13 @@ CoD.IW7PerksContainer.new = function ( menu, controller )
 					end
 				end
 
-				self.PerkList:completeAnimation()
-				self.PerkList:setAlpha( 0 )
-				DefaultStateTransition( self.PerkList, {} )
+				self.PowerupList:completeAnimation()
+				self.PowerupList:setAlpha( 0 )
+				DefaultStateTransition( self.PowerupList, {} )
 			end
 		}
 	}
-	
+
 	self:mergeStateConditions( {
 		{
 			stateName = "Hidden",
@@ -382,10 +295,10 @@ CoD.IW7PerksContainer.new = function ( menu, controller )
 		} )
 	end )
 
-	self.PerkList.id = "PerkList"
+	self.PowerupList.id = "PowerupList"
 
 	LUI.OverrideFunction_CallOriginalSecond( self, "close", function ( element )
-		element.PerkList:close()
+		element.PowerupList:close()
 	end )
 	
 	if PostLoadFunc then

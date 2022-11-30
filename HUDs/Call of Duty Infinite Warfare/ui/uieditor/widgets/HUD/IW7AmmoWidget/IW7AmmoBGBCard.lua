@@ -52,13 +52,13 @@ CoD.IW7AmmoBGBCard.new = function ( menu, controller )
 	self.BGBImage:setShaderVector( 0, 0.5, 0, 0, 0 )
 	self.BGBImage:setZRot( 3 )
 	self.BGBImage:setScale( 1.3 )
-	self.BGBImage:subscribeToGlobalModel( controller, "PerController", "bgb_current", function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
+	self.BGBImage:subscribeToGlobalModel( controller, "PerController", "bgb_current", function ( model )
+		if Engine.GetModelValue( model ) then
 			BGBImageSubscription( self.BGBImage )
 		end
 	end )
-	self.BGBImage:subscribeToGlobalModel( controller, "PerController", "bgb_display", function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
+	self.BGBImage:subscribeToGlobalModel( controller, "PerController", "bgb_display", function ( model )
+		if Engine.GetModelValue( model ) then
 			BGBImageSubscription( self.BGBImage )
 		end
 	end )
@@ -278,16 +278,16 @@ CoD.IW7AmmoBGBCard.new = function ( menu, controller )
 		}
 	}
 
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "bgb_display" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "bgb_display" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "bgb_display"
 		} )
 
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == 0 then
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == 0 then
 				PlayClip( self, "SlideOutAnim", controller )
 			else
 				PlayClip( self, "SlideInAnim", controller )

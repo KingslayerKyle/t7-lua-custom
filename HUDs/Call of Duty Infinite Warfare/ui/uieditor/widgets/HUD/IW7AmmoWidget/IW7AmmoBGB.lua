@@ -18,37 +18,37 @@ CoD.IW7AmmoBGB.new = function ( menu, controller )
 	
 	self.Card4 = LUI.UIImage.new()
 	self.Card4:setLeftRight( false, true, -158, -37 )
-	self.Card4:setTopBottom( false, true, -160, 20 )
+	self.Card4:setTopBottom( false, true, -163, 17 )
 	self.Card4:setImage( RegisterImage( "zm_wc_fan" ) )
 	self.Card4:setRGB( 0.66, 0.66, 0.66 )
-	self.Card4:setScale( 0.95 )
+	self.Card4:setScale( 0.92 )
 	self.Card4:setZRot( -30 )
 	self:addElement( self.Card4 )
 
 	self.Card3 = LUI.UIImage.new()
 	self.Card3:setLeftRight( false, true, -158, -37 )
-	self.Card3:setTopBottom( false, true, -160, 20 )
+	self.Card3:setTopBottom( false, true, -163, 17 )
 	self.Card3:setImage( RegisterImage( "zm_wc_fan" ) )
 	self.Card3:setRGB( 0.66, 0.66, 0.66 )
-	self.Card3:setScale( 0.95 )
+	self.Card3:setScale( 0.92 )
 	self.Card3:setZRot( -22.5 )
 	self:addElement( self.Card3 )
 
 	self.Card2 = LUI.UIImage.new()
 	self.Card2:setLeftRight( false, true, -158, -37 )
-	self.Card2:setTopBottom( false, true, -160, 20 )
+	self.Card2:setTopBottom( false, true, -163, 17 )
 	self.Card2:setImage( RegisterImage( "zm_wc_fan" ) )
 	self.Card2:setRGB( 0.66, 0.66, 0.66 )
-	self.Card2:setScale( 0.95 )
+	self.Card2:setScale( 0.92 )
 	self.Card2:setZRot( -15 )
 	self:addElement( self.Card2 )
 
 	self.Card1 = LUI.UIImage.new()
 	self.Card1:setLeftRight( false, true, -158, -37 )
-	self.Card1:setTopBottom( false, true, -160, 20 )
+	self.Card1:setTopBottom( false, true, -163, 17 )
 	self.Card1:setImage( RegisterImage( "zm_wc_fan" ) )
 	self.Card1:setRGB( 0.66, 0.66, 0.66 )
-	self.Card1:setScale( 0.95 )
+	self.Card1:setScale( 0.92 )
 	self.Card1:setZRot( -7.5 )
 	self:addElement( self.Card1 )
 
@@ -81,9 +81,9 @@ CoD.IW7AmmoBGB.new = function ( menu, controller )
 	self.Meter:setShaderVector( 1, 0.5, 0, 0, 0 )
 	self.Meter:setShaderVector( 2, 0.5, 0, 0, 0 )
 	self.Meter:setShaderVector( 3, 0, 0, 0, 0 )
-	self.Meter:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "bgb_timer" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) < 1 then
+	self.Meter:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "bgb_timer" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) < 1 then
 				self.Meter:setImage( RegisterImage( "uie_t7_menu_aar_whiteringfore" ) )
 				self.Meter:setRGB( 0.94, 0.61, 0.18 )
 				self.Meter:setScale( 0.88 )
@@ -94,11 +94,10 @@ CoD.IW7AmmoBGB.new = function ( menu, controller )
 			end
 			
 			self.Meter:setShaderVector( 0, AdjustStartEnd( 0, 1,
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 1 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 2 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 3 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 4 ) )
-			)
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 1 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 2 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 3 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 4 ) ) )
 		end
 	end )
 	self:addElement( self.Meter )
@@ -215,11 +214,11 @@ CoD.IW7AmmoBGB.new = function ( menu, controller )
 		}
 	} )
 
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "bgb_timer" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "bgb_timer" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "bgb_timer"
 		} )
 

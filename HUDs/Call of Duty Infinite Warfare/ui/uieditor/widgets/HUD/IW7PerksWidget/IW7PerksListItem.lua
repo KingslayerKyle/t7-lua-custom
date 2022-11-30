@@ -35,9 +35,9 @@ CoD.IW7PerksListItem.new = function ( menu, controller )
 	self.PerkImage = LUI.UIImage.new()
 	self.PerkImage:setLeftRight( true, false, 0, 36 + 6 )
 	self.PerkImage:setTopBottom( false, true, -36 - 6, 0 )
-	self.PerkImage:linkToElementModel( self, "image", true, function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.PerkImage:setImage( RegisterImage( Engine.GetModelValue( modelRef ) ) )
+	self.PerkImage:linkToElementModel( self, "image", true, function ( model )
+		if Engine.GetModelValue( model ) then
+			self.PerkImage:setImage( RegisterImage( Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.PerkImage )
@@ -380,11 +380,11 @@ CoD.IW7PerksListItem.new = function ( menu, controller )
 		}
 	} )
 
-	self:linkToElementModel( self, "status", true, function ( modelRef )
+	self:linkToElementModel( self, "status", true, function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "status"
 		} )
 	end )

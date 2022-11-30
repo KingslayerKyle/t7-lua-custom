@@ -1,6 +1,7 @@
 // FONTS
 ttf,fonts/blender_pro_bold.ttf
 ttf,fonts/blender_pro_medium.ttf
+ttf,fonts/zm_clean.ttf
 
 // SCRIPTS
 scriptparsetree,scripts/zm/_zm_iw7_hud.gsc
@@ -8,31 +9,50 @@ scriptparsetree,scripts/zm/_zm_iw7_hud.csc
 
 // LUA
 rawfile,ui/uieditor/menus/hud/IW7Hud_zm_factory.lua
+rawfile,ui/uieditor/menus/StartMenu/IW7StartMenu_GameOptions_ZM.lua
+rawfile,ui/uieditor/menus/StartMenu/IW7StartMenu_Main.lua
+rawfile,ui/uieditor/menus/StartMenu/IW7StartMenu_Options.lua
 rawfile,ui/uieditor/widgets/HUD/IW7AmmoWidget/IW7AmmoContainer.lua
 rawfile,ui/uieditor/widgets/HUD/IW7AmmoWidget/IW7AmmoEquipment.lua
 rawfile,ui/uieditor/widgets/HUD/IW7AmmoWidget/IW7AmmoInfo.lua
 rawfile,ui/uieditor/widgets/HUD/IW7AmmoWidget/IW7AmmoBGB.lua
 rawfile,ui/uieditor/widgets/HUD/IW7AmmoWidget/IW7AmmoBGBCard.lua
+rawfile,ui/uieditor/widgets/HUD/IW7GameOverWidget/IW7GameOver.lua
+rawfile,ui/uieditor/widgets/HUD/IW7GameOverWidget/IW7GameOverListItem.lua
+rawfile,ui/uieditor/widgets/HUD/IW7NotificationWidget/IW7Notification.lua
 rawfile,ui/uieditor/widgets/HUD/IW7PerksWidget/IW7PerksContainer.lua
 rawfile,ui/uieditor/widgets/HUD/IW7PerksWidget/IW7PerksListItem.lua
-rawfile,ui/uieditor/widgets/HUD/IW7PowerupsWidget/IW7Powerups.lua
 rawfile,ui/uieditor/widgets/HUD/IW7RoundWidget/IW7Round.lua
 rawfile,ui/uieditor/widgets/HUD/IW7ScoreWidget/IW7ClientScore.lua
 rawfile,ui/uieditor/widgets/HUD/IW7ScoreWidget/IW7PlusPoints.lua
 rawfile,ui/uieditor/widgets/HUD/IW7ScoreWidget/IW7PlusPointsContainer.lua
 rawfile,ui/uieditor/widgets/HUD/IW7ScoreWidget/IW7ScoreContainer.lua
 rawfile,ui/uieditor/widgets/HUD/IW7ScoreWidget/IW7SelfScore.lua
+rawfile,ui/uieditor/widgets/HUD/IW7ScoreboardWidget/IW7Scoreboard.lua
+rawfile,ui/uieditor/widgets/HUD/IW7ScoreboardWidget/IW7ScoreboardListItem.lua
+rawfile,ui/uieditor/widgets/HUD/KingslayerPowerupsWidget/KingslayerPowerupsContainer.lua
+rawfile,ui/uieditor/widgets/HUD/KingslayerPowerupsWidget/KingslayerPowerupsListItem.lua
+rawfile,ui/uieditor/widgets/Lobby/Common/IW7ButtonListItem.lua
 
 // IMAGES
-material,zm_powerup_double_cash
-material,zm_powerup_fire_sale
-material,zm_powerup_instakill
-material,zm_powerup_max_ammo
 material,zm_wc_fire_loop
+image,category_icon_downs
+image,category_icon_headshots
+image,category_icon_kills
+image,category_icon_revives
+image,category_icon_survivors
 image,clapboard_arm
 image,clapboard_base
 image,clapboard_condensed
 image,clapboard_condensed_extend
+image,cp_main_button_background
+image,cp_main_button_blood_splatter
+image,cp_main_button_glow
+image,cp_menu_pause_red_glow
+image,cp_menu_title_line_glow
+image,cp_menu_zombies_blood_splats_large
+image,cp_menu_zombies_logo
+image,cp_zmb_inventory_pink_bg
 image,cp_zmb_perk_icon_deadeye
 image,cp_zmb_perk_icon_flash
 image,cp_zmb_perk_icon_more
@@ -54,6 +74,13 @@ image,zm_main_richtofen
 image,zm_main_richtofen_old
 image,zm_main_takeo
 image,zm_main_takeo_old
+image,zm_pc_score_bg
+image,zm_powerup_double_cash
+image,zm_powerup_fire_sale
+image,zm_powerup_glow_element
+image,zm_powerup_infinite_ammo
+image,zm_powerup_instakill
+image,zm_powerup_max_ammo
 image,zm_team_dempsey
 image,zm_team_dempsey_old
 image,zm_team_floyd
@@ -66,7 +93,7 @@ image,zm_team_richtofen
 image,zm_team_richtofen_old
 image,zm_team_takeo
 image,zm_team_takeo_old
-image,zm_pc_score_bg
+image,zm_tix_arcane_spinner
 image,zm_wc_card_glow_ring
 image,zm_wc_circle_bg
 image,zm_wc_devil_head_bottom

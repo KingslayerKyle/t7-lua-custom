@@ -19,18 +19,15 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
     self.AmmoClip:setTopBottom( false, true, -58.5, -26.5 )
     self.AmmoClip:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.AmmoClip:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.AmmoClip:subscribeToGlobalModel( controller, "CurrentWeapon", "ammoInClip", function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			-- Not going to write a clip just for this because there's
-			-- a lot of conditions to take into consideration and I cba
-			-- creating a new widget for the sake of two elements
+	self.AmmoClip:subscribeToGlobalModel( controller, "CurrentWeapon", "ammoInClip", function ( model )
+		if Engine.GetModelValue( model ) then
 			if IsLowAmmoClip( controller ) then
 				self.AmmoClip:setRGB( 1, 0.22, 0.22 )
 			else
 				self.AmmoClip:setRGB( 1, 1, 1 )
 			end
 
-			self.AmmoClip:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+			self.AmmoClip:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 		end
 	end )
     self:addElement( self.AmmoClip )
@@ -40,15 +37,15 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
     self.AmmoClipDW:setTopBottom( false, true, -58.5, -26.5 )
     self.AmmoClipDW:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.AmmoClipDW:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.AmmoClipDW:subscribeToGlobalModel( controller, "CurrentWeapon", "ammoInDWClip", function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
+	self.AmmoClipDW:subscribeToGlobalModel( controller, "CurrentWeapon", "ammoInDWClip", function ( model )
+		if Engine.GetModelValue( model ) then
 			if IsLowAmmoDWClip( controller ) then
 				self.AmmoClipDW:setRGB( 1, 0.22, 0.22 )
 			else
 				self.AmmoClipDW:setRGB( 1, 1, 1 )
 			end
 
-			self.AmmoClipDW:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+			self.AmmoClipDW:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 		end
 	end )
     self:addElement( self.AmmoClipDW )
@@ -58,9 +55,9 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
     self.AmmoStock:setTopBottom( false, true, -41, -26 )
 	self.AmmoStock:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.AmmoStock:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_RIGHT )
-	self.AmmoStock:subscribeToGlobalModel( controller, "CurrentWeapon", "ammoStock", function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.AmmoStock:setText( Engine.Localize( Engine.GetModelValue( modelRef ) ) )
+	self.AmmoStock:subscribeToGlobalModel( controller, "CurrentWeapon", "ammoStock", function ( model )
+		if Engine.GetModelValue( model ) then
+			self.AmmoStock:setText( Engine.Localize( Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.AmmoStock )
@@ -90,7 +87,8 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
 						element:beginAnimation( "keyframe", 100, false, false, CoD.TweenType.Linear )
 					end
 	
-					element:setRGB( 1, 1, 1 )
+					element:setTopBottom( false, true, -58.5 - 3, -26.5 + 3 )
+					element:setRGB( 1, 0.22, 0.22 )
 	
 					if event.interrupted then
 						self.clipFinished( element, event )
@@ -100,7 +98,8 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
 				end
 
 				self.AmmoClip:completeAnimation()
-				self.AmmoClip:setAlpha( 0 )
+				self.AmmoClip:setTopBottom( false, true, -58.5, -26.5 )
+				self.AmmoClip:setRGB( 1, 1, 1 )
 				AmmoPulseTransition( self.AmmoClip, {} )
 			end
 		},
@@ -114,13 +113,14 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
 			end,
 			DefaultState = function ()
 				self:setupElementClipCounter( 1 )
-	
-				local DefaultStateTransition = function ( element, event )
+			
+				local AmmoPulseTransition = function ( element, event )
 					if not event.interrupted then
 						element:beginAnimation( "keyframe", 100, false, false, CoD.TweenType.Linear )
 					end
 	
-					element:setRGB( 1, 0.22, 0.22 )
+					element:setTopBottom( false, true, -58.5, -26.5 )
+					element:setRGB( 1, 1, 1 )
 	
 					if event.interrupted then
 						self.clipFinished( element, event )
@@ -128,10 +128,11 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
 						element:registerEventHandler( "transition_complete_keyframe", self.clipFinished )
 					end
 				end
-	
+
 				self.AmmoClip:completeAnimation()
-				self.AmmoClip:setAlpha( 1 )
-				DefaultStateTransition( self.AmmoClip, {} )
+				self.AmmoClip:setTopBottom( false, true, -58.5 - 3, -26.5 + 3 )
+				self.AmmoClip:setRGB( 1, 0.22, 0.22 )
+				AmmoPulseTransition( self.AmmoClip, {} )
 			end
 		},
 		Hidden = {
@@ -183,7 +184,9 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
 				if not WeaponUsesAmmo( controller )
 				or IsModelValueEqualTo( controller, "currentWeapon.viewmodelWeaponName", "minigun_zm" )
 				or IsModelValueEqualTo( controller, "currentWeapon.viewmodelWeaponName", "cymbal_monkey_zm" )
+				or IsModelValueEqualTo( controller, "currentWeapon.viewmodelWeaponName", "octobomb_zm" )
 				or IsModelValueEqualTo( controller, "currentWeapon.viewmodelWeaponName", "frag_grenade_zm" )
+				or IsModelValueEqualTo( controller, "currentWeapon.viewmodelWeaponName", "sticky_grenade_widows_wine_zm" )
 				or ModelValueStartsWith( controller, "currentWeapon.viewmodelWeaponName", "zombie_" ) then
 					return true
 				else
@@ -200,31 +203,28 @@ CoD.IW7AmmoInfo.new = function ( menu, controller )
 			end
 		}
 	} )
-	
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.ammoInDWClip" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.pulseNoAmmo" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
-			modelName = "currentWeapon.ammoInDWClip"
+			modelValue = Engine.GetModelValue( model ),
+			modelName = "hudItems.pulseNoAmmo"
 		} )
 	end )
-	
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.viewmodelWeaponName" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.viewmodelWeaponName" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
+			modelValue = Engine.GetModelValue( model ),
 			modelName = "currentWeapon.viewmodelWeaponName"
 		} )
 	end )
-	
-	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.pulseNoAmmo" ), function ( modelRef )
+	self:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "currentWeapon.ammoInDWClip" ), function ( model )
 		menu:updateElementState( self, {
 			name = "model_validation",
 			menu = menu,
-			modelValue = Engine.GetModelValue( modelRef ),
-			modelName = "hudItems.pulseNoAmmo"
+			modelValue = Engine.GetModelValue( model ),
+			modelName = "currentWeapon.ammoInDWClip"
 		} )
 	end )
 

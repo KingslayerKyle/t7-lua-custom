@@ -27,9 +27,9 @@ CoD.IW7SelfScore.new = function ( menu, controller )
 	self.ScoreText:setTopBottom( false, true, -123.5, -100 )
 	self.ScoreText:setTTF( "fonts/blender_pro_bold.ttf" )
 	self.ScoreText:setAlignment( Enum.LUIAlignment.LUI_ALIGNMENT_LEFT )
-	self.ScoreText:linkToElementModel( self, "playerScore", true, function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			self.ScoreText:setText( Engine.Localize( "$ " .. Engine.GetModelValue( modelRef ) ) )
+	self.ScoreText:linkToElementModel( self, "playerScore", true, function ( model )
+		if Engine.GetModelValue( model ) then
+			self.ScoreText:setText( Engine.Localize( "$ " .. Engine.GetModelValue( model ) ) )
 		end
 	end )
 	self:addElement( self.ScoreText )
@@ -39,42 +39,42 @@ CoD.IW7SelfScore.new = function ( menu, controller )
 	self.PortraitImage:setTopBottom( false, true, -240.5, -99.75 )
 	self.PortraitImage:setImage( RegisterImage( "blacktransparent" ) )
 	self.PortraitImage:setMaterial( LUI.UIImage.GetCachedMaterial( "uie_feather_blend" ) )
-	self.PortraitImage:linkToElementModel( self, "zombiePlayerIcon", true, function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char1" then
+	self.PortraitImage:linkToElementModel( self, "zombiePlayerIcon", true, function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char1" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_nikolai" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char1_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char1_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_nikolai_old" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char2" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char2" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_takeo" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char2_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char2_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_takeo_old" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char3" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char3" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_dempsey" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char3_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char3_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_dempsey_old" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char4" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char4" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_richtofen" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char4_old" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char4_old" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_richtofen_old" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char5" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char5" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_jessica" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char6" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char6" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_jack" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char7" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char7" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_nero" ) )
 
-			elseif Engine.GetModelValue( modelRef ) == "uie_t7_zm_hud_score_char8" then
+			elseif Engine.GetModelValue( model ) == "uie_t7_zm_hud_score_char8" then
 				self.PortraitImage:setImage( RegisterImage( "zm_main_floyd" ) )
 			end
 		end
@@ -91,23 +91,22 @@ CoD.IW7SelfScore.new = function ( menu, controller )
 	self.ShieldOutline:setShaderVector( 0, 0, 1, 0, 0 )
 	self.ShieldOutline:setShaderVector( 1, 0, 0, 0, 0 )
 	self.ShieldOutline:setShaderVector( 3, 0, 0, 0, 0 )
-	self.ShieldOutline:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.showDpadDown" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == 1 then
+	self.ShieldOutline:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.showDpadDown" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == 1 then
 				self.ShieldOutline:setImage( RegisterImage( "uie_t7_mp_icon_header_emblem" ) )
 			else
 				self.ShieldOutline:setImage( RegisterImage( "blacktransparent" ) )
 			end
 		end
 	end )
-	self.ShieldOutline:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "ZMInventory.shield_health" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
+	self.ShieldOutline:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "ZMInventory.shield_health" ), function ( model )
+		if Engine.GetModelValue( model ) then
 			self.ShieldOutline:setShaderVector( 2, SetVectorComponent( 2, 1, SubtractVectorComponentFrom( 1, 0.5, ScaleVector( 0.5,
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 1 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 2 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 3 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 4 ) ) ) )
-			)
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 1 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 2 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 3 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 4 ) ) ) ) )
 		end
 	end )
 	self:addElement( self.ShieldOutline )
@@ -120,23 +119,22 @@ CoD.IW7SelfScore.new = function ( menu, controller )
 	self.ShieldHealth:setShaderVector( 0, 0, 1, 0, 0 )
 	self.ShieldHealth:setShaderVector( 1, 0, 0, 0, 0 )
 	self.ShieldHealth:setShaderVector( 3, 0, 0, 0, 0 )
-	self.ShieldHealth:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.showDpadDown" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
-			if Engine.GetModelValue( modelRef ) == 1 then
+	self.ShieldHealth:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "hudItems.showDpadDown" ), function ( model )
+		if Engine.GetModelValue( model ) then
+			if Engine.GetModelValue( model ) == 1 then
 				self.ShieldHealth:setImage( RegisterImage( "uie_t7_mp_icon_header_emblem" ) )
 			else
 				self.ShieldHealth:setImage( RegisterImage( "blacktransparent" ) )
 			end
 		end
 	end )
-	self.ShieldHealth:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "ZMInventory.shield_health" ), function ( modelRef )
-		if Engine.GetModelValue( modelRef ) then
+	self.ShieldHealth:subscribeToModel( Engine.GetModel( Engine.GetModelForController( controller ), "ZMInventory.shield_health" ), function ( model )
+		if Engine.GetModelValue( model ) then
 			self.ShieldHealth:setShaderVector( 2, SetVectorComponent( 2, 1, SubtractVectorComponentFrom( 1, 0.5, ScaleVector( 0.5,
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 1 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 2 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 3 ),
-				CoD.GetVectorComponentFromString( Engine.GetModelValue( modelRef ), 4 ) ) ) )
-			)
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 1 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 2 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 3 ),
+				CoD.GetVectorComponentFromString( Engine.GetModelValue( model ), 4 ) ) ) ) )
 		end
 	end )
 	self:addElement( self.ShieldHealth )

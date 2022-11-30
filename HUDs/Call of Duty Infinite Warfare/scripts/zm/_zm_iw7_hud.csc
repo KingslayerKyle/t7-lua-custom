@@ -18,7 +18,6 @@ REGISTER_SYSTEM_EX( "zm_iw7_hud", &__init__, &__main__, undefined )
 function __init__()
 {
     LuiLoad( "ui.uieditor.menus.hud.IW7Hud_zm_factory" );
-    LuiLoad( "ui.uieditor.widgets.HUD.IW7PowerupsWidget.IW7Powerups" );
 
     clientfield::register( "clientuimodel", "IW7.MuleKick", VERSION_SHIP, 1, "int", undefined, !CF_HOST_ONLY, !CF_CALLBACK_ZERO_ON_NEW_ENT );
 }
